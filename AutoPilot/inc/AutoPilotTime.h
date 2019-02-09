@@ -11,6 +11,7 @@ namespace AutoPilot
 		static Time current();
 		
 		/* Constructor */
+		Time();
 		Time(int h, int m, int s, int mill);
 		Time(const Time& t);
 		

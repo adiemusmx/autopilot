@@ -6,6 +6,11 @@ namespace AutoPilot
 {
 #define TIME_STAMP_LENGTH 13
 
+	Time::Time()
+	{
+		hour = minute = second = millisecond = 0;
+	}
+	
 	Time::Time(int h, int m, int s, int mill)
 	{
 		hour = h;
@@ -31,16 +36,20 @@ namespace AutoPilot
 	
 	void Time::fromLine(std::string line)
 	{
-		if (line.length() <= TIME_STAMP_LENGTH || line[TIME_STAMP_LENGTH - 1] != '|')
+		std::regex reg("(\\d{2}):(\\d{2}):(\\d{2}).(\\d{3})");
+		std::smatch m;
+		
+		if (std::regex_match(line, m, reg))
+		{
+			hour = atoi(m.str(1).data());
+			minute = atoi(m.str(2).data());
+			second = atoi(m.str(3).data());
+			millisecond = atoi(m.str(4).data());
+		}
+		else
 		{
 			std::cerr << "Invalid line [" << line << "]" << std::endl;
-			return;
 		}
-		
-		std::regex reg("(\\d{2}):(\\d{2}):(\\d{2}):(\\d{3})");
-		std::string ip = "09:11:21:333";
-		std::smatch m;
-		std::regex_match(ip, m, reg);
 	}
 	
 	Time& Time::operator=(const Time& t)
