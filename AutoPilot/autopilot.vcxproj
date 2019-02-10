@@ -13,12 +13,13 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C01DF039-4205-4B9E-A051-2A70F78349D5}</ProjectGuid>
     <RootNamespace>autopilot</RootNamespace>
+    <ProjectName>AutoPilot</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -46,7 +47,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>inc;C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\ucrt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -68,11 +69,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\AutoPilotTime.cpp" />
+    <ClCompile Include="src\AyncCompress.cpp" />
+    <ClCompile Include="src\AyncLog.cpp" />
+    <ClCompile Include="src\FileMutex.cpp" />
     <ClCompile Include="src\TouchRecord.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\AutoPilotTime.h" />
+    <ClInclude Include="inc\AyncCompress.h" />
+    <ClInclude Include="inc\AyncLog.h" />
     <ClInclude Include="inc\BaseRecord.h" />
+    <ClInclude Include="inc\FileMutex.h" />
     <ClInclude Include="inc\TouchRecord.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -31,7 +31,7 @@ namespace AutoPilot
 		long long getMilliseconds()const;
 		
 		/* Record Time Format */
-		virtual std::string toLine();
+		virtual std::string toLine() const;
 		virtual std::string fromLine(const std::string& line);
 		
 		static const int length = 12; /* 01:02:03.456 */

@@ -27,7 +27,7 @@ namespace AutoPilot
 		millisecond = t.millisecond;
 	}
 	
-	std::string Time::toLine()
+	std::string Time::toLine() const
 	{
 		char time[TIME_STAMP_LENGTH] = { 0 };
 		sprintf_s(time, "%02d:%02d:%02d.%03d", hour, minute, second, millisecond);

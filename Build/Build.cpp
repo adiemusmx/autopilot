@@ -1,14 +1,27 @@
 ﻿// Build.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
-
+#include "vld.h"
 #include <iostream>
 #include "AutoPilotTime.h"
 #include "BaseRecord.h"
+#include "AyncLog.h"
+#include <windows.h>
 
 int main()
 {
-	AutoPilot::BaseRecord record;
-	record.analysis("12:32:12.123|test on line log");
+	int lineCount = 900000;
+	AutoPilot::AyncLogManager_init();
+	AutoPilot::AyncLog log("test.log");
+	log.init();
+	log.setMaxLineNumber(1000);
+	//while (--lineCount != 0)
+	{
+		//log.print("Hello World! ");
+		Sleep(5);
+	}
+	log.cleanup();
+	AutoPilot::AyncLogManager_cleanup();
+	return 0;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

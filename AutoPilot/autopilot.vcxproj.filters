@@ -21,15 +21,33 @@
     <ClCompile Include="src\AutoPilotTime.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\AyncLog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AyncCompress.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FileMutex.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\TouchRecord.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="inc\BaseRecord.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="inc\AutoPilotTime.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\AyncLog.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\AyncCompress.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\FileMutex.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\TouchRecord.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
