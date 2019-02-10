@@ -34,9 +34,9 @@ namespace AutoPilot
 		return time;
 	}
 	
-	void Time::fromLine(std::string line)
+	std::string Time::fromLine(const std::string& line)
 	{
-		std::regex reg("(\\d{2}):(\\d{2}):(\\d{2}).(\\d{3})");
+		std::regex reg("(\\d{2}):(\\d{2}):(\\d{2}).(\\d{3})(.*)");
 		std::smatch m;
 		
 		if (std::regex_match(line, m, reg))
@@ -45,10 +45,12 @@ namespace AutoPilot
 			minute = atoi(m.str(2).data());
 			second = atoi(m.str(3).data());
 			millisecond = atoi(m.str(4).data());
+			return m.str(5).data();
 		}
 		else
 		{
-			std::cerr << "Invalid line [" << line << "]" << std::endl;
+			std::cerr << __FUNCTION__ << ": Invalid line [" << line << "]" << std::endl;
+			return line;
 		}
 	}
 	

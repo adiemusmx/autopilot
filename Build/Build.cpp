@@ -3,12 +3,12 @@
 
 #include <iostream>
 #include "AutoPilotTime.h"
+#include "BaseRecord.h"
 
 int main()
 {
-	AutoPilot::Time t;
-	t = AutoPilot::Time::current();
-	t.fromLine("09:11:31.883");
+	AutoPilot::BaseRecord record;
+	record.analysis("12:32:12.123|test on line log");
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

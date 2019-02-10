@@ -4,9 +4,11 @@
 
 namespace AutoPilot
 {
+	/* Basic Time Class */
 	class Time
 	{
 	public:
+	
 		/* Current Time */
 		static Time current();
 		
@@ -30,7 +32,9 @@ namespace AutoPilot
 		
 		/* Record Time Format */
 		virtual std::string toLine();
-		virtual void fromLine(std::string line);
+		virtual std::string fromLine(const std::string& line);
+		
+		static const int length = 12; /* 01:02:03.456 */
 		
 	public:
 		int hour;
