@@ -8,17 +8,14 @@
 
 namespace AutoPilot
 {
-	void AyncLogManager_init();
-	void AyncLogManager_cleanup();
-	
 	/* Singleton pattern */
-	class AyncLog
+	class AyncLog : public std::enable_shared_from_this<AyncLog>
 	{
 		friend class AyncLogManager;
 	public:
 	
 		/* Constructor and Destructor */
-		AyncLog(const std::string& fileName);
+		AyncLog(const std::string& tag, const std::string& fileName);
 		virtual ~AyncLog();
 		
 		/* Initialize and cleanup */
@@ -36,6 +33,11 @@ namespace AutoPilot
 		
 		void setAutoFlushInterval(int interval) {}
 		
+	public:
+
+		/* Operator */
+		bool operator==(const AyncLog& log) { return m_tag == log.m_tag; }
+
 	private:
 	
 		/* Disable copy constructor */
@@ -45,6 +47,9 @@ namespace AutoPilot
 		/* Generate file name of log */
 		std::string generateFileName();
 		
+		/* Tag of the log */
+		std::string m_tag;
+
 		/* File name of the log */
 		std::string m_fileName;
 		int m_fileNameSuffix = 0;			/* From 1 to n, suffix of the log file */

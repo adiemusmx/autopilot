@@ -20,37 +20,43 @@ namespace AutoPilot
 			return &ins;
 		}
 		
-		/* Initialize and cleanup */
-		void init()
-		{
-			std::thread th(AyncLogManager::AyncAutoFlushProc);
-			th.detach();
-		}
-		void cleanup()
-		{
-			m_isExit = true;
-			
-			while (m_isExit)
-			{
-				Sleep(100);
-			}
-		}
-		
 		/* Attach and detach info */
-		void attach(AyncLog* info)
+		void attach(std::shared_ptr<AyncLog> info)
 		{
-			std::lock_guard<std::mutex> temp(m_mutex);
-			
-			if (std::find(m_coll.begin(), m_coll.end(), info) == m_coll.end())
+			auto iter = std::find_if(m_coll.begin(), m_coll.end(), [&info](std::weak_ptr<AyncLog> log) -> bool
+			{
+				if (!log.expired())
+				{
+					auto item = log.lock();
+					return item->m_tag == info->m_tag;
+				}
+			});
+
+			if (iter == m_coll.end())
 			{
 				m_coll.push_back(info);
+
+				if (m_isRunning == false)
+				{
+					m_isRunning = true;
+					std::thread th(AyncLogManager::AyncAutoFlushProc);
+					th.detach();
+				}
 			}
 		}
-		void detach(AyncLog* info)
+
+		void detach(std::shared_ptr<AyncLog> info)
 		{
-			std::lock_guard<std::mutex> temp(m_mutex);
-			auto iter = std::find(m_coll.begin(), m_coll.end(), info);
-			
+			auto iter = std::find_if(m_coll.begin(), m_coll.end(), [&info](std::weak_ptr<AyncLog> log) -> bool
+			{
+				if (!log.expired())
+				{
+					auto item = log.lock();
+					return item->m_tag == info->m_tag;
+				}
+				return false;
+			});
+
 			if (iter != m_coll.end())
 			{
 				m_coll.erase(iter);
@@ -63,47 +69,42 @@ namespace AutoPilot
 		static void AyncAutoFlushProc()
 		{
 			AyncLogManager* manager = instance();
-			
-			while (manager->m_isExit == false)
+
+			while (manager->m_coll.size() > 0)
 			{
 				Time nowTime = Time::current();
-				manager->m_mutex.lock();
-				
-				for (auto item : manager->m_coll)
+
+				for (auto ptr : manager->m_coll)
 				{
-					if ((nowTime - item->m_lastAutoFlushTime) > item->m_autoFlushInterval)
+					if (!ptr.expired())
 					{
-						item->flush();
-						item->m_lastAutoFlushTime = nowTime;
+						auto item = ptr.lock();
+						if ((nowTime - item->m_lastAutoFlushTime) > item->m_autoFlushInterval)
+						{
+							item->flush();
+							item->m_lastAutoFlushTime = nowTime;
+						}
 					}
+					
 				}
 				
-				manager->m_mutex.unlock();
 				Sleep(100);
 			}
 			
-			manager->m_isExit = false;
+			m_isRunning = false;
 		}
 		
 	private:
 	
-		std::mutex m_mutex;
-		std::vector<AyncLog*> m_coll;
-		bool m_isExit = false;
+		std::vector<std::weak_ptr<AyncLog>> m_coll;
+		static bool m_isRunning;
 	};
+
+	bool AyncLogManager::m_isRunning = false;
 	
-	void AyncLogManager_init()
+	AyncLog::AyncLog(const std::string& tag, const std::string& fileName)
 	{
-		AutoPilot::AyncLogManager::instance()->init();
-	}
-	
-	void AyncLogManager_cleanup()
-	{
-		AutoPilot::AyncLogManager::instance()->cleanup();
-	}
-	
-	AyncLog::AyncLog(const std::string& fileName)
-	{
+		m_tag = tag;
 		m_fileName = fileName;
 	}
 	
@@ -121,12 +122,12 @@ namespace AutoPilot
 			std::cerr << __FUNCTION__ << " : Create File [" << m_fileName << "] failed." << std::endl;
 		}
 		
-		AyncLogManager::instance()->attach(this);
+		AyncLogManager::instance()->attach(shared_from_this());
 	}
 	
 	void AyncLog::cleanup()
 	{
-		AyncLogManager::instance()->detach(this);
+		AyncLogManager::instance()->detach(shared_from_this());
 		flush();
 		
 		if (!m_fileStream)
@@ -144,18 +145,18 @@ namespace AutoPilot
 	
 	void AyncLog::flush()
 	{
-		/* Lock buffer mutex */
-		m_bufferMutex.lock();
-		
 		/* If m_buffer is empty, abort this flush operation */
 		if (m_buffer.size() == 0 || !m_fileStream)
 		{
 			return;
 		}
 		
+		/* Lock buffer mutex */
+		m_bufferMutex.lock();
+
 		while (!m_buffer.empty())
 		{
-			m_fileStream << m_buffer.front() << std::endl;
+			m_fileStream << "[" << m_tag << "]" << m_buffer.front() << std::endl;
 			m_buffer.pop();
 			++m_lineNumber;
 		}

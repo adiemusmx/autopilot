@@ -10,17 +10,15 @@
 int main()
 {
 	int lineCount = 900000;
-	AutoPilot::AyncLogManager_init();
-	AutoPilot::AyncLog log("test.log");
-	log.init();
-	log.setMaxLineNumber(1000);
+	std::shared_ptr<AutoPilot::AyncLog> log = std::make_shared<AutoPilot::AyncLog>("MAIN", "test.log");
+	log->init();
+	log->setMaxLineNumber(1000);
 	//while (--lineCount != 0)
 	{
 		//log.print("Hello World! ");
 		Sleep(5);
 	}
-	log.cleanup();
-	AutoPilot::AyncLogManager_cleanup();
+	log->cleanup();
 	return 0;
 }
 
